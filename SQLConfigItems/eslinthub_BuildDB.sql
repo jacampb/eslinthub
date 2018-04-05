@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_repos` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-ALTER TABLE `eslinthub`.`ut_repos` AUTO_INCREMENT=1;
+ALTER TABLE `eslinthub`.`ut_repos` ADD UNIQUE `unique_index`(`repo_name`,`html_url`);
 
 CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_eslint_issues` (
   `eslint_issues_id` INT NOT NULL,
