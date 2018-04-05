@@ -34,20 +34,33 @@ Scripts3:
 
 
 Stack:
+
 Scripting: Python 2.7 (https://www.python.org)
+
 Database: MySQL (https://www.mysql.com)
+
 Linting: ESLint (https://eslint.org)
 
 Setup:
 
 sudo apt-get install nodejs
+
 sudo apt-get install npm
+
 npm install eslint --save-dev
+
 sudo ln -s /usr/bin/nodejs /usr/bin/node
+
 ./node_modules/.bin/eslint --init
+
 sudo apt-get install mysql-server
+
 mysql_secure_installation
+
 sudo systemctl start mysql.service
+
 pip install pycurl
+
 pip install mysql-connector
+
 run the build script found in the SQL directory.
