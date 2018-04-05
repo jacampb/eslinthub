@@ -2,6 +2,7 @@
 import argparse
 import time
 import pycurl
+import json
 from StringIO import StringIO
 
 
@@ -52,7 +53,8 @@ print('pagenum: ' + str(maxpage))
 #do while pagenum <= the max page number found above
 while True:
 	#parse the repo Names and URLs out of the response
-	
+	jsonresp = json.loads(resp.body)
+	print(jsonresp)
 	#Insert into ut_repos any that don't already exist
 
 	#increment pagenum
@@ -67,6 +69,6 @@ while True:
 	curl.setopt(curl.URL, URL)
 	curl.setopt(curl.WRITEFUNCTION, resp.body_callback)
 	time.sleep(6)
-	curl.perform()
+	#curl.perform()
 	curl.close()
 	print(pagenum)
