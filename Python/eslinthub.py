@@ -1,7 +1,9 @@
 #Imports
 import argparse
 import time
+import datetime
 import pycurl
+import mysql.connector
 import json
 from StringIO import StringIO
 
@@ -25,9 +27,20 @@ class Response:
 parser = argparse.ArgumentParser(description='Scan GitHub for public repositories to analyze with ESLint.')
 
 parser.add_argument('-L','--language', help='Specifies the language to scan for. Default is JavaScript. Supported languages: JavaScript', default='JavaScript')
-
+parser.add_argument('-u','--user', help='username for the mysql database login',required=True)
+parser.add_argument('-p', '--password', help='password for the mysql database login', required=True)
+parser.add_argument('-s', '--server', help='the server that contains the database(defaults to localhost)',dest='server', default='localhost')
+parser.add_argument('-db' '--databasename', help='database name to connect to(defaults to eslinthub)', dest='dbname', default='eslinthub') 
 args = parser.parse_args()
 
+
+#db connection config
+config = {
+	'user':str(args.user),
+	'password':str(args.password),
+	'host':str(args.server),
+	'database':str(args.dbname),
+	}
 
 #Build url
 pagenum = 1
@@ -47,16 +60,24 @@ curl.close()
 headerlist = resp.header.split('page=')
 maxpage = headerlist[2].split('>')[0]
 
-print('pagenum: ' + str(maxpage))
-#open connectio to MySQL db
+#open connection to MySQL db
+conn=mysql.connector.connect(**config)
+cursor=conn.cursor()
 
 #do while pagenum <= the max page number found above
 while True:
 	#parse the repo Names and URLs out of the response
 	jsonresp = json.loads(resp.body)
-	print(jsonresp)
-	#Insert into ut_repos any that don't already exist
-
+	for item in jsonresp['items']:
+		reponame=item['html_url'].split('/')
+		reponame=reponame[-1]
+		htmlurl=item['html_url']+'.git'
+		#Insert into ut_repos any that don't already exist
+		sql='INSERT INTO ' + args.dbname + '.ut_repos (repo_name, html_url,insert_dttm, last_modified) VALUES ("%s","%s","%s","%s")' % (reponame,htmlurl,datetime.datetime.now(),datetime.datetime.now())
+		try:
+			cursor.execute(sql)
+		except mysql.connector.IntegrityError as err:
+			print('Duplicate Repository Not Being Added: ' + reponame)
 	#increment pagenum
 	pagenum = pagenum + 1
 	if int(pagenum) >int(maxpage):
@@ -69,6 +90,7 @@ while True:
 	curl.setopt(curl.URL, URL)
 	curl.setopt(curl.WRITEFUNCTION, resp.body_callback)
 	time.sleep(6)
-	#curl.perform()
+	curl.perform()
 	curl.close()
-	print(pagenum)
+
+conn.commit()
