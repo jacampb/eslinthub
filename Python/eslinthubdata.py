@@ -71,11 +71,12 @@ for row in data:
         while lint_line:
             #insert file name and error line into ut_eslint_issues
             printable=set(string.printable)
-            lint_line= filter(lambda x: x in printable,str(lint_line))
+            lint_line= filter(lambda x: x in printable,str(lint_line)) #Remove non printable characters
             lint_line= lint_line.replace('[22m',' ')
             lint_line= lint_line.replace('[2m',' ')
             lint_line= lint_line.replace('[39m', ' ')
             lint_line= lint_line.replace('[31m', ' ')
+            lint_line= ' '.join(lint_line.split()) #replace multiple whitespace with a single space for cleaner formatting
             inCur.execute('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line,filename))
             lint_line=f.readline()
         conn.commit()
