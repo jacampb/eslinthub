@@ -94,3 +94,5 @@ while True:
 	curl.close()
 
 conn.commit()
+cursor.close()
+conn.close()

@@ -20,7 +20,7 @@ DEFAULT CHARACTER SET = utf8;
 ALTER TABLE `eslinthub`.`ut_repos` ADD UNIQUE `unique_index`(`repo_name`,`html_url`);
 
 CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_eslint_issues` (
-  `eslint_issues_id` INT NOT NULL,
+  `eslint_issues_id` INT NOT NULL AUTO_INCREMENT,
   `repo_id` INT NOT NULL,
   `issue_description` VARCHAR(4096) NOT NULL,
   `file_name` VARCHAR(45) NOT NULL,

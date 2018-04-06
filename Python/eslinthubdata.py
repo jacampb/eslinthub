@@ -1,6 +1,9 @@
 import mysql.connector
 import argparse
 import sys
+import os
+import json
+import string
 #import ESLint
 
 #Parse aguments
@@ -43,18 +46,50 @@ for row in data:
     print row[0], row[1], row[2], row[3], row[4], row[5]
 
     #clone row[2] to working directory
-
+    os.system('git clone %s' % str(row[2]))
+    
     #create list of all .js files
+    os.system('find . -name "*.js" > js.files')
+    with open('js.files') as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
 
     #for file in files:
+    for file in content:
+        filesplit = file.split("/")
+        filename = filesplit[-1]
+        print(filename)
         #ESlint -o lintresults.out filename.js
-        
+        os.system('~/node_modules/.bin/eslint -c ~/.eslintrc.js --no-eslintrc -o lint.out %s' % str(file))
         #Wait for process to complete, then parse lintresults.out
-
-        #store results in ut_eslint_issues one record per issue.
+        f=open('lint.out')
+        lint_line = f.readline() # this discards the header row, find a better way
+        lint_line = f.readline()
+        lint_line = f.readline()
+        conn=mysql.connector.connect(**config)
+        inCur=conn.cursor()
+        while lint_line:
+            #insert file name and error line into ut_eslint_issues
+            printable=set(string.printable)
+            lint_line= filter(lambda x: x in printable,str(lint_line))
+            lint_line= lint_line.replace('[22m',' ')
+            lint_line= lint_line.replace('[2m',' ')
+            lint_line= lint_line.replace('[39m', ' ')
+            lint_line= lint_line.replace('[31m', ' ')
+            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line,filename))
+            lint_line=f.readline()
+        conn.commit()
+        inCur.close()
+        conn.close()
 
     #clear out working directory and process next row/repo
-
+    os.system('rm -rf %s' % row[1])
+    #update the ESLint field for the repo
+    conn=mysql.connector.connect(**config)
+    upCur=conn.cursor()
+    upCur.execute('UPDATE ut_repos SET ESLint="Y" WHERE repo_id = %s' % row[0])
+    upCur.close()
+    conn.close()
 
 
 
