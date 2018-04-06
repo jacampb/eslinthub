@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_eslint_issues` (
   `eslint_issues_id` INT NOT NULL AUTO_INCREMENT,
   `repo_id` INT NOT NULL,
   `issue_description` VARCHAR(4096) NOT NULL,
-  `file_name` VARCHAR(45) NOT NULL,
+  `file_name` VARCHAR(1024) NOT NULL,
   PRIMARY KEY (`eslint_issues_id`),
   INDEX `fk_ut_eslint_issues_1_idx` (`repo_id` ASC),
   CONSTRAINT `fk_ut_eslint_issues_1`
