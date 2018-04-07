@@ -57,16 +57,13 @@ for row in data:
 
     #for file in files:
     for file in content:
-#        filesplit = file.split("/")
-#        filename = filesplit[-1]
-#        print(filename)
         #ESlint -o lintresults.out filename.js
         os.system('~/node_modules/.bin/eslint -c ~/.eslintrc.js --no-eslintrc -o lint.out --no-color %s' % str(file))
         #Wait for process to complete, then parse lintresults.out
         f=open('lint.out')
-        lint_line = f.readline() # this discards the header row, find a better way
-        lint_line = f.readline()
-        lint_line = f.readline()
+        lint_line = f.readline() # first line of output is whitespace, skip it
+        lint_line = f.readline() # second line of output is a header, skip it
+        lint_line = f.readline() # third line of output is first issue. Start processing on this line
         conn=mysql.connector.connect(**config)
         inCur=conn.cursor()
         while lint_line.split():
@@ -75,8 +72,12 @@ for row in data:
             lint_line = str(lint_line.strip().split(' ', 1)[1])
             type = str(lint_line.strip().split(' ', 1)[0])
             lint_line = str(lint_line.strip().split(' ', 1)[1])
-            print('INSERT INTO ut_eslint_issues (repo_id,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
-            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,line_column,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
+            try:
+                 inCur.execute('INSERT INTO ut_eslint_issues (repo_id,line_column,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
+            except:
+		print('Error instering into db:')
+                print('INSERT INTO ut_eslint_issues (repo_id,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
+                raise
             lint_line=f.readline()
         conn.commit()
         inCur.close()
