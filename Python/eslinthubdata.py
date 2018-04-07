@@ -71,9 +71,12 @@ for row in data:
         inCur=conn.cursor()
         while lint_line.split():
             #insert file name and error line into ut_eslint_issues
-#            lint_line= ' '.join(lint_line.split()) #replace multiple whitespace with a single space for cleaner formatting
-            print('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),file))
-            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),file))
+            line_col = str(lint_line.strip().split(' ', 1)[0])
+            lint_line = str(lint_line.strip().split(' ', 1)[1])
+            type = str(lint_line.strip().split(' ', 1)[0])
+            lint_line = str(lint_line.strip().split(' ', 1)[1])
+            print('INSERT INTO ut_eslint_issues (repo_id,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
+            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,line_column,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
             lint_line=f.readline()
         conn.commit()
         inCur.close()

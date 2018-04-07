@@ -24,6 +24,8 @@ ALTER TABLE `eslinthub`.`ut_repos` ADD UNIQUE `unique_index`(`repo_name`,`html_u
 CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_eslint_issues` (
   `eslint_issues_id` INT NOT NULL AUTO_INCREMENT,
   `repo_id` INT NOT NULL,
+  `line_column` VARCHAR(1024) NOT NULL,
+  `issue_type` VARCHAR(20) NOT NULL,
   `issue_description` VARCHAR(4096) NOT NULL,
   `file_name` VARCHAR(4096) NOT NULL,
   PRIMARY KEY (`eslint_issues_id`),
