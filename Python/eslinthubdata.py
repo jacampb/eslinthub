@@ -55,9 +55,9 @@ for row in data:
 
     #for file in files:
     for file in content:
-        filesplit = file.split("/")
-        filename = filesplit[-1]
-        print(filename)
+#        filesplit = file.split("/")
+#        filename = filesplit[-1]
+#        print(filename)
         #ESlint -o lintresults.out filename.js
         os.system('~/node_modules/.bin/eslint -c ~/.eslintrc.js --no-eslintrc -o lint.out --no-color %s' % str(file))
         #Wait for process to complete, then parse lintresults.out
@@ -70,8 +70,8 @@ for row in data:
         while lint_line.split():
             #insert file name and error line into ut_eslint_issues
 #            lint_line= ' '.join(lint_line.split()) #replace multiple whitespace with a single space for cleaner formatting
-            print('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),filename))
-            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),filename))
+            print('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),file))
+            inCur.execute('INSERT INTO ut_eslint_issues (repo_id,issue_description,file_name) VALUES ("%s","%s","%s")' % (row[0],lint_line.replace('"',r'\"'),file))
             lint_line=f.readline()
         conn.commit()
         inCur.close()
@@ -82,7 +82,8 @@ for row in data:
     #update the ESLint field for the repo
     conn=mysql.connector.connect(**config)
     upCur=conn.cursor()
-    upCur.execute('UPDATE ut_repos SET ESLint="Y" WHERE repo_id = %s' % row[0])
+    upCur.execute('UPDATE eslinthub.ut_repos SET ESLint="Y" WHERE repo_id = %s' % row[0])
+    conn.commit()
     upCur.close()
     conn.close()
 
