@@ -20,6 +20,8 @@ config={
 	'password':str(args.password),
 	'host':str(args.server),
 	'db':str(args.dbname),
+        'collation':'utf8mb4_general_ci',
+        'charset':'utf8mb4',
 	}
 #creates the connection, username and password right now are just placeholders
 connection = mysql.connector.connect (**config)
