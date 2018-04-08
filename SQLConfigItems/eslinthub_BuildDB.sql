@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `eslinthub`.`ut_repos` (
   `repo_id` INT NOT NULL AUTO_INCREMENT,
   `repo_name` VARCHAR(45) NULL,
   `html_url` VARCHAR(128) NULL,
+  `language` VARCHAR(128) NOT NULL,
   `ESlint` VARCHAR(1) NULL,
   `insert_dttm` DATETIME NOT NULL,
   `last_modified` DATETIME NOT NULL,
