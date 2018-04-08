@@ -67,17 +67,18 @@ for row in data:
         conn=mysql.connector.connect(**config)
         inCur=conn.cursor()
         while lint_line.split():
-            #insert file name and error line into ut_eslint_issues
-            line_col = str(lint_line.strip().split(' ', 1)[0])
-            lint_line = str(lint_line.strip().split(' ', 1)[1])
-            type = str(lint_line.strip().split(' ', 1)[0])
-            lint_line = str(lint_line.strip().split(' ', 1)[1])
-            try:
+            try: 
+                 #insert file name and error line into ut_eslint_issues
+                 line_col = str(lint_line.strip().split(' ', 1)[0])
+                 lint_line = str(lint_line.strip().split(' ', 1)[1])
+                 type = str(lint_line.strip().split(' ', 1)[0])
+                 lint_line = str(lint_line.strip().split(' ', 1)[1])
+
                  inCur.execute('INSERT INTO ut_eslint_issues (repo_id,line_column,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
             except:
-		print('Error instering into db:')
+		print('Error Processing Line:')
                 print('INSERT INTO ut_eslint_issues (repo_id,issue_type,issue_description,file_name) VALUES ("%s","%s","%s","%s","%s")' % (row[0],line_col,type,lint_line.replace('"',r'\"'),file))
-                raise
+                pass
             lint_line=f.readline()
         conn.commit()
         inCur.close()
