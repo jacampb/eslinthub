@@ -35,6 +35,8 @@ Scripts3:
 
 Stack:
 
+OS: Ubuntu 16.04 LTS
+
 Scripting: Python 2.7 (https://www.python.org)
 
 Database: MySQL (https://www.mysql.com)
