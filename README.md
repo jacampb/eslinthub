@@ -11,16 +11,14 @@ This will lay out my current plan or ideas. This is open to change as the develo
 There will be 3 main python scripts.
 
 ##### eslinthub.py:
-Required Parameters: -u <database username>, -p <database password>
-EX:python eslinthub.py -u root -p root1234
+Required Parameters: -u <database username>, -p <database password> (EX:python eslinthub.py -u root -p root1234)
 
 -Take in parameters to control the language we search for (-L) and database connectivity info like user (-u), password (-p), server name (-s), and database name (-db).
 -Query the REST API and parse the response to gather all repository names and urls that meet our search criteria.
 -Store the resulting list of repositories in a MySQL table where we can quickly grab the url to git clone while enforcing uniqueness.
 
 ##### eslinthubdata.py:
-Required Parameters: -u <database username>, -p <database password>
-EX:python eslinthubdata.py -u root -p root1234
+Required Parameters: -u <database username>, -p <database password> (EX:python eslinthubdata.py -u root -p root1234)
   
 -Query the database for a list of all repositories that have not been linted yet. 
 -Iterate through the list and process each repository one at a time.
